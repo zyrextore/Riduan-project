@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>ZYREX LAB — Web / Roblox / UI / Automation</title>
+<meta name="description" content="ZYREX Lab — digital studio untuk web, Roblox system, UI/UX, dan automation. Store, payment checkout QRIS, dan live earthquake radar."/>
+<meta name="theme-color" content="#0A0C10"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="ZYREX"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="color-scheme" content="dark"/>
+<link href="style.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<link rel="manifest" href="/manifest.json"/>
+<link rel="icon" href="/assets/zyrex-icon.svg" type="image/svg+xml"/>
+<link rel="apple-touch-icon" href="/assets/icon-192.png"/>
+</head>
+<body class="zx-gate-locked">
+
+<!-- ================= AUTH GATE — wajib login/daftar sebelum masuk ================= -->
+<div id="zx-authgate" style="position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:999999;display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto;background:#0B0810;">
+  <div class="zx-gate-card zx-panel">
+    <div class="zx-gate-brand"><b>ZX</b> ZYREX<span class="slash">//</span>LAB</div>
+    <div class="zx-auth-tabs">
+      <button type="button" class="zx-auth-tab active" data-auth-tab="login">LOGIN</button>
+      <button type="button" class="zx-auth-tab" data-auth-tab="register">DAFTAR</button>
+    </div>
+
+    <form id="zx-login-form" class="zx-auth-form">
+      <label>Email
+        <input type="email" id="zx-login-email" autocomplete="email" required placeholder="kamu@email.com">
+      </label>
+      <label>Password
+        <input type="password" id="zx-login-pass" autocomplete="current-password" required placeholder="••••••••" minlength="6">
+      </label>
+      <div class="zx-auth-error" id="zx-login-error"></div>
+      <button type="submit" class="btn hot full">LOGIN →</button>
+    </form>
+
+    <form id="zx-register-form" class="zx-auth-form hidden">
+      <label>Nama
+        <input type="text" id="zx-reg-name" autocomplete="name" required placeholder="Nama kamu">
+      </label>
+      <label>Email
+        <input type="email" id="zx-reg-email" autocomplete="email" required placeholder="kamu@email.com">
+      </label>
+      <label>Password
+        <input type="password" id="zx-reg-pass" autocomplete="new-password" required placeholder="Minimal 6 karakter" minlength="6">
+      </label>
+      <label>Konfirmasi Password
+        <input type="password" id="zx-reg-pass2" autocomplete="new-password" required placeholder="Ulangi password" minlength="6">
+      </label>
+      <div class="zx-auth-error" id="zx-register-error"></div>
+      <button type="submit" class="btn hot full">BUAT AKUN →</button>
+    </form>
+    <div class="zx-gate-note">Masuk atau daftar untuk lanjut ke dashboard ZYREX.</div>
+  </div>
+</div>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<header class="header">
+  <a class="brand" href="#home" data-zx-page="home"><b>ZX</b><span>ZYREX<span class="slash">//</span>LAB</span></a>
+  <nav id="nav" aria-label="ZYREX navigation">
+    <a href="#home" data-zx-page="home">HOME</a>
+    <a href="#work" data-zx-page="work">WORK</a>
+    <a href="#services" data-zx-page="services">SERVICES</a>
+    <a href="#lab" data-zx-page="lab">LAB</a>
+    <a href="#ai" data-zx-page="ai">AI</a>
+    <a href="#radar" data-zx-page="radar">RADAR</a>
+    <a href="#gesture" data-zx-page="gesture">GESTURE</a>
+    <a href="#store" data-zx-page="store">STORE</a>
+    <a href="/admin">ADMIN</a>
+    <a href="#about" data-zx-page="about">ABOUT</a>
+    <a href="#contact" data-zx-page="contact">CONTACT</a>
+    <a href="#account" data-zx-page="account">AKUN</a>
+  </nav>
+  <div class="head-actions">
+    <button class="icon-btn" id="navToggle" title="Menu" aria-label="Buka menu navigasi" aria-expanded="false">☰</button>
+    <button class="icon-btn" id="installAppBtn" title="Install ZYREX" aria-label="Install ZYREX" style="display:none">＋</button>
+    <button class="icon-btn" id="themeBtn" title="Toggle theme">◐</button>
+    <a class="icon-btn" href="#account" data-zx-page="account" id="accountBtn" title="Akun" aria-label="Akun">👤</a>
+    <button class="command-btn" id="cmdBtn">⌘ K</button>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero wrap" id="home">
+  <div class="hero-kicker"><span class="pulse"></span> ZYREX / DIGITAL STUDIO / 2026</div>
+  <h1>SIGNALS<br/>WORTH <em>TRACKING.</em></h1>
+  <p class="hero-sub">Website, produk digital, Roblox, UI/UX, automation — dirancang sebagai experience yang jelas arahnya, bukan sekadar halaman.</p>
+  <div class="hero-actions">
+    <a class="btn hot" href="#work">LIHAT KARYA ↗</a>
+    <a class="btn outline" href="#contact">MULAI PROJECT →</a>
+  </div>
+  <div class="hero-profile zx-panel">
+    <div><span class="eyebrow">PROFILE // ZYREX</span><h3>Digital creator & builder.</h3><p>Fokus pada web, UI/UX, Roblox, automation, dan eksperimen digital. Suka bikin sesuatu yang simpel, berguna, dan punya karakter.</p></div>
+    <div class="hero-skills"><span>WEB</span><span>UI/UX</span><span>ROBLOX</span><span>AUTOMATION</span></div>
+  </div>
+  <div class="hero-quote">“Bikin sesuatu yang punya fungsi, bukan cuma kelihatan bagus.”</div>
+  <div class="hero-stats">
+    <div><b>24+</b><span>BUILDS</span></div>
+    <div><b>5</b><span>PIPELINE</span></div>
+    <div><b>24/7</b><span>ONLINE</span></div>
+  </div>
+  <div class="zx-wave" aria-hidden="true">
+    <svg viewBox="0 0 400 34" preserveAspectRatio="none"><polyline points="0,17 20,17 28,4 36,30 44,17 60,17 68,10 76,24 84,17 200,17 208,4 216,30 224,17 240,17 248,10 256,24 264,17 380,17 388,4 396,30 400,17" fill="none" stroke="#3FD9AC" stroke-width="1.4"/></svg>
+  </div>
+  <div class="hero-livebar">
+    <span><b>●</b> SYSTEM NOMINAL</span>
+    <span id="liveClock">--:--:--</span>
+    <span id="liveStatus">BUILDING</span>
+  </div>
+</section>
+
+<!-- ================= WORK ================= -->
+<section class="section work wrap" id="work">
+  <div class="section-head">
+    <div><span class="eyebrow">01 // Selected work</span><h2>NOT JUST<br/><em>PRETTY.</em></h2></div>
+    <p>Project archive yang bisa difilter. Klik kartu untuk lihat detail.</p>
+  </div>
+  <div class="filters" id="filters">
+    <button class="active" data-filter="all">ALL <b>06</b></button>
+    <button data-filter="web">WEB <b>02</b></button>
+    <button data-filter="roblox">ROBLOX <b>01</b></button>
+    <button data-filter="ui">UI/UX <b>01</b></button>
+    <button data-filter="auto">AUTO <b>01</b></button>
+    <button data-filter="lab">LAB <b>01</b></button>
+  </div>
+  <div class="work-grid zx-panel" id="workGrid" style="border:none;background:none;display:grid">
+    <article class="work-card big zx-panel" data-cat="web" data-desc="A futuristic studio interface with dashboard-like navigation, micro interactions and conversion-focused sections." data-tags="HTML,CSS,JavaScript" data-title="ZYREX OS">
+      <div class="visual v1"><img alt="ZYREX visual" src="assets/hero-bg.webp" decoding="async" fetchpriority="high"/><span>WEB / 01</span><b>↗</b></div>
+      <div class="card-info"><small>WEB EXPERIENCE</small><h3>ZYREX OS</h3><p>Studio site redesigned as a digital operating system.</p><div class="tags"><i>HTML</i><i>CSS</i><i>JS</i></div></div>
+    </article>
+    <article class="work-card zx-panel" data-cat="web" data-desc="A static-first storefront concept with cart, product filtering and payment checkout." data-tags="Store,Cart,WhatsApp" data-title="NEON COMMERCE">
+      <div class="visual v2"><div class="mini-ui"><b>NEON</b><span>STORE</span><hr/><strong>¥ 99K</strong></div><span>WEB / 02</span><b>↗</b></div>
+      <div class="card-info"><small>STORE CONCEPT</small><h3>NEON COMMERCE</h3><p>Shopping flow without a heavy backend.</p><div class="tags"><i>CART</i><i>FILTER</i><i>CHECKOUT</i></div></div>
+    </article>
+    <article class="work-card zx-panel" data-cat="roblox" data-desc="Eight-mode animated neon lighting controller concept for Roblox Studio." data-tags="Luau,Neon,Animation" data-title="ROBLOX LIGHT LAB">
+      <div class="visual v3"><div class="light-bars"><i></i><i></i><i></i><i></i><i></i></div><span>ROBLOX / 01</span><b>↗</b></div>
+      <div class="card-info"><small>GAME SYSTEM</small><h3>LIGHT LAB</h3><p>8-mode neon controller with smooth effects.</p><div class="tags"><i>LUAU</i><i>RGB</i><i>FX</i></div></div>
+    </article>
+    <article class="work-card big zx-panel" data-cat="ui" data-desc="Reusable UI kit concept for dashboards, cards, navigation and command interfaces." data-tags="UI Kit,Components,UX" data-title="ZX COMPONENTS">
+      <div class="visual v4"><div class="component-grid"><i></i><i></i><i></i><i></i><i></i><i></i></div><span>UI / 01</span><b>↗</b></div>
+      <div class="card-info"><small>DESIGN SYSTEM</small><h3>ZX COMPONENTS</h3><p>Reusable interface language for fast product builds.</p><div class="tags"><i>UI KIT</i><i>UX</i><i>SYSTEM</i></div></div>
+    </article>
+    <article class="work-card zx-panel" data-cat="auto" data-desc="Automation concept that turns repetitive project actions into one simple flow." data-tags="Automation,API,Node" data-title="FLOW MACHINE">
+      <div class="visual v5"><div class="flow"><i>INPUT</i><b>→</b><i>FLOW</i><b>→</b><i>OUTPUT</i></div><span>AUTO / 01</span><b>↗</b></div>
+      <div class="card-info"><small>AUTOMATION</small><h3>FLOW MACHINE</h3><p>Less clicking. More shipping.</p><div class="tags"><i>API</i><i>FLOW</i><i>SCRIPT</i></div></div>
+    </article>
+    <article class="work-card zx-panel" data-cat="lab" data-desc="Interactive terminal playground used for experiments and visual prototyping." data-tags="Terminal,JS,Experiment" data-title="ZX TERMINAL">
+      <div class="visual v6"><pre>ZX://LAB<br/>&gt; boot()<br/>&gt; system.ready<br/>&gt; █</pre><span>LAB / 01</span><b>↗</b></div>
+      <div class="card-info"><small>EXPERIMENT</small><h3>ZX TERMINAL</h3><p>Small experiments that become big ideas.</p><div class="tags"><i>JS</i><i>LAB</i><i>PLAY</i></div></div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= SERVICES ================= -->
+<section class="section services wrap" id="services">
+  <div class="section-head">
+    <div><span class="eyebrow">02 // Capabilities</span><h2>WHAT WE<br/><em>BUILD.</em></h2></div>
+    <p>Mulai dari satu landing page sampai sistem yang punya banyak moving parts.</p>
+  </div>
+  <div class="service-grid">
+    <article class="zx-panel"><b>01</b><h3>WEB<br/>EXPERIENCE</h3><p>Landing page, portfolio, company site, dashboard dan web app.</p><span>↗</span></article>
+    <article class="zx-panel"><b>02</b><h3>ROBLOX<br/>SYSTEM</h3><p>Gameplay system, UI, data, animation dan tools berbasis Luau.</p><span>↗</span></article>
+    <article class="zx-panel"><b>03</b><h3>UI / UX<br/>SYSTEM</h3><p>Design direction, component system dan interface yang konsisten.</p><span>↗</span></article>
+    <article class="zx-panel"><b>04</b><h3>AUTO<br/>MATION</h3><p>Script, workflow, API integration dan tools untuk kerja repetitif.</p><span>↗</span></article>
+  </div>
+</section>
+
+<!-- ================= LAB ================= -->
+<section class="section lab wrap zx-panel" id="lab">
+  <div class="lab-top">
+    <div><span class="eyebrow">03 // Experimental area</span><h2>ZYREX<br/><em>LAB.</em></h2></div>
+    <div class="live-pill"><i></i> SYSTEM ONLINE</div>
+  </div>
+  <div class="lab-shell">
+    <aside>
+      <button class="lab-tab active" data-panel="terminal">01 TERMINAL</button>
+      <button class="lab-tab" data-panel="stats">02 LIVE STATS</button>
+      <button class="lab-tab" data-panel="tools">03 TOOLS</button>
+    </aside>
+    <div class="lab-content">
+      <div class="lab-panel active" id="panel-terminal">
+        <div class="terminal-head"><span>ZX_TERMINAL</span><span>● ● ●</span></div>
+        <div class="terminal-body" id="terminal">
+          <p><b>zyrex@lab</b>:~$ boot --interactive</p>
+          <p>System initialized. Type <b>help</b>.</p>
+          <p class="prompt"><b>zyrex@lab</b>:~$ <input aria-label="Terminal input" autocomplete="off" id="termInput"/></p>
+        </div>
+      </div>
+      <div class="lab-panel" id="panel-stats">
+        <div class="stat-big"><b id="visitorCount">1,284</b><span>LAB VISITS</span></div>
+        <div class="stat-row"><span>DESIGN</span><i><b style="width:88%"></b></i><strong>88%</strong></div>
+        <div class="stat-row"><span>CODE</span><i><b style="width:94%"></b></i><strong>94%</strong></div>
+        <div class="stat-row"><span>CHAOS</span><i><b style="width:72%"></b></i><strong>72%</strong></div>
+      </div>
+      <div class="lab-panel" id="panel-tools">
+        <div class="tools">
+          <button data-tool="palette">⌘ Color Palette</button>
+          <button data-tool="clock">◷ Local Clock</button>
+          <button data-tool="count"># Project Counter</button>
+          <button data-tool="random">✦ Random Mode</button>
+        </div>
+        <div class="tool-output" id="toolOutput">Select a tool.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= APP HUB: RADAR + AI ================= -->
+<section class="section app-hub" id="apps">
+  <div class="app-hub-wrap wrap">
+    <div class="app-hub-head">
+      <div><small>04 // ZYREX APP HUB</small><h2>TRACK.<br/><em>BUILD.</em></h2></div>
+      <p class="app-hub-note">AI workspace ringan. Earthquake Radar dipisah sebagai menu khusus supaya lu bisa buka radar tanpa scroll panjang.</p>
+    </div>
+    <div class="app-grid">
+      <article class="app-card wide radar-card">
+        <div class="radar-card-head">
+          <div>
+            <div class="app-card-top"><div><small>01 // EARTHQUAKE INTELLIGENCE</small><h3>ZYREX EARTHQUAKE RADAR</h3></div><span class="live-dot" id="radarStatus">STARTING</span></div>
+            <p>Monitor gempa terbaru dari USGS secara real-time. Tap titik untuk melihat magnitudo, kedalaman, waktu, dan detail sumber.</p>
+          </div>
+          <div class="radar-orbit-mark"><i></i><span>ZX</span></div>
+        </div>
+        <div class="radar-stats">
+          <div><span>EVENTS</span><b id="radarCount">0</b></div>
+          <div><span>STRONGEST</span><b id="radarStrongest">—</b></div>
+          <div><span>UPDATED</span><b id="radarUpdated">—</b></div>
+        </div>
+        <div class="radar-toolbar">
+          <label class="radar-search"><span>⌕</span><input class="app-input" id="radarSearch" placeholder="Search location / region..." autocomplete="off"/></label>
+          <select class="app-input radar-select" id="radarMagnitude" aria-label="Minimum magnitude"><option value="0">ALL</option><option value="1">MAG ≥ 1.0</option><option value="2.5">MAG ≥ 2.5</option><option value="4.5">MAG ≥ 4.5</option></select>
+          <button class="app-btn radar-locate" id="radarLocate">◎ MY LOCATION</button>
+        </div>
+        <div class="radar-map-wrap">
+          <div class="radar-map" id="radarMap"></div><div class="radar-fallback" id="radarFallback" hidden>Earthquake Radar sedang memuat data USGS…</div>
+          <div class="radar-overlay radar-legend"><b>MAGNITUDE</b><span><i class="lg-dot lg-low"></i> 0–4.4</span><span><i class="lg-dot lg-mid"></i> 4.5–5.9</span><span><i class="lg-dot lg-high"></i> 6.0+</span></div>
+          <div class="radar-overlay radar-live"><i></i><span>LIVE USGS · MARKERS ACTIVE</span></div>
+          <div class="radar-detail" id="radarDetail" hidden></div>
+        </div>
+        <div class="radar-footer"><span>AUTO REFRESH · 30 SEC</span><span>USGS LIVE · ALL EVENTS</span><span>OPENSTREETMAP</span></div>
+      </article>
+      <article class="app-card wide">
+        <div class="app-card-top"><div><small>02 // AI WORKSPACE</small><h3>ZYREX AI</h3></div><span class="live-dot">READY</span></div>
+        <p>Workspace prompt ringan untuk coding, ide, debugging, dan tugas. Prompt bisa langsung dicopy atau dibuka di Claude.</p>
+        <div class="ai-layout">
+          <div class="ai-box">
+            <textarea class="app-input" id="aiPrompt" style="height:92px;padding:12px;resize:vertical" placeholder="Tulis pertanyaan untuk ZYREX AI..."></textarea>
+            <div class="app-toolbar ai-controls"><select class="app-input" id="aiModel" aria-label="AI model"><option value="chat-model-reasoning">Reasoning</option><option value="chat-model">Standard</option></select></div>
+            <div class="app-toolbar">
+              <button class="app-btn primary" id="aiAsk">ASK ZYREX AI</button><button class="app-btn" id="aiPrepare">PREPARE PROMPT</button>
+              <button class="app-btn" id="aiCopy">COPY PROMPT</button>
+              <button class="app-btn" id="aiClaude">OPEN CLAUDE</button>
+            </div>
+            <div class="ai-output" id="aiOutput">Tulis kebutuhan lu di atas. ZYREX akan menyusun prompt yang lebih jelas.</div>
+          </div>
+          <aside class="ai-side">
+            <b>QUICK PROMPTS</b>
+            <button class="app-btn" data-ai="debug">Debug error kode ini</button>
+            <button class="app-btn" data-ai="build">Buat fitur ringan</button>
+            <button class="app-btn" data-ai="study">Jelaskan materi sekolah</button>
+            <button class="app-btn" data-ai="idea">Cari ide project</button>
+          </aside>
+        </div>
+      </article>
+      <article class="app-card wide gesture-card">
+        <div class="app-card-top"><div><small>03 // MOTION STUDIO</small><h3>ZYREX GESTURE CANVAS</h3></div><span class="live-dot" id="gestureTeaserStatus">NEW</span></div>
+        <p>Gambar langsung di atas kamera lu cuma pakai gerakan tangan — real-time hand tracking, warna-warni, efek glow, undo, dan save ke galeri. Nggak perlu install apa-apa.</p>
+        <div class="app-toolbar"><button class="app-btn primary" data-zx-page="gesture">▶ BUKA GESTURE CANVAS</button></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Gesture Canvas dedicated full-screen view (hand-tracking drawing) -->
+<div class="gesture-view" id="gestureView" aria-hidden="true">
+  <div class="gesture-view-backdrop" data-gesture-close="1"></div>
+  <div class="gesture-view-shell">
+    <div class="gesture-view-top">
+      <div><small>ZYREX // MOTION STUDIO</small><b>GESTURE CANVAS</b></div>
+      <button class="gesture-view-close" data-gesture-close="1">✕ CLOSE</button>
+    </div>
+    <div class="gesture-stage">
+      <div class="gesture-cam-wrap mirrored" id="gestureCamWrap">
+        <div class="gesture-flip">
+          <video id="gestureVideo" playsinline autoplay muted></video>
+          <canvas id="gestureCanvas"></canvas>
+        </div>
+        <div class="gesture-cursor" id="gestureCursor" hidden></div>
+        <div class="gesture-hint" id="gestureHint">Tap "Aktifkan Kamera" buat mulai gambar pakai tangan.</div>
+      </div>
+      <aside class="gesture-panel">
+        <div class="gesture-tools">
+          <button class="gtool active" data-gtool="draw" type="button">✏️<br/>DRAW</button>
+          <button class="gtool" data-gtool="erase" type="button">🧽<br/>ERASE</button>
+          <button class="gtool" data-gtool="move" type="button">✋<br/>MOVE</button>
+        </div>
+        <div class="gesture-colors" id="gestureColors"></div>
+        <label class="gesture-custom-color">CUSTOM <input type="color" id="gestureColorPicker" value="#ff3d7a"/></label>
+        <div class="gesture-size">
+          <span>SIZE</span>
+          <button class="app-btn" id="gestureSizeMinus" type="button">−</button>
+          <b id="gestureSizeVal">10</b>
+          <button class="app-btn" id="gestureSizePlus" type="button">+</button>
+        </div>
+        <div class="gesture-toggles">
+          <button class="app-btn" id="gestureGlow" type="button" aria-pressed="false">✨ GLOW</button>
+          <button class="app-btn" id="gestureMirror" type="button" aria-pressed="true">⇋ MIRROR</button>
+        </div>
+        <div class="gesture-actions">
+          <button class="app-btn" id="gestureUndo" type="button">↺ UNDO</button>
+          <button class="app-btn" id="gestureClear" type="button">CLEAR</button>
+          <button class="app-btn primary" id="gestureStart" type="button">▶ AKTIFKAN KAMERA</button>
+          <button class="app-btn" id="gestureSave" type="button">💾 SAVE</button>
+        </div>
+        <div class="gesture-status" id="gestureHandStatus">KAMERA BELUM AKTIF</div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- Dedicated AI workspace; the existing AI card is moved here once by the router. -->
+<div class="workspace-view" id="aiView" aria-hidden="true">
+  <div class="workspace-backdrop" data-ai-close="1"></div>
+  <div class="workspace-shell">
+    <div class="workspace-top"><div><small>ZYREX // INTELLIGENCE</small><b>ZYREX AI</b></div><button class="workspace-close" data-ai-close="1">CLOSE</button></div>
+  </div>
+</div>
+
+<!-- Earthquake Radar dedicated full-screen view (mounted here by JS) -->
+<div class="radar-view" id="radarView" aria-hidden="true">
+  <div class="radar-view-backdrop" data-radar-close="1"></div>
+  <div class="radar-view-shell">
+    <div class="radar-view-top">
+      <div><small>ZYREX // LIVE INTELLIGENCE</small><b>EARTHQUAKE RADAR</b></div>
+      <button class="radar-view-close" data-radar-close="1">✕ CLOSE</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= STORE ================= -->
+<section class="section store wrap" id="store">
+  <div class="section-head">
+    <div><span class="eyebrow">05 // Digital store</span><h2>GRAB A<br/><em>BUILD.</em></h2></div>
+    <p>Produk digital concept. Cart tersimpan di browser dan checkout dibuat lewat payment flow QRIS.</p>
+  </div>
+  <div class="store-layout">
+    <div class="products">
+      <article class="product zx-panel" data-name="ZX Landing Kit" data-price="49000" data-pid="zx-landing-kit">
+        <div class="product-art">01</div>
+        <div><small>WEB KIT</small><h3>ZX LANDING KIT</h3><p>Starter sections + effects.</p><strong>Rp49K</strong></div>
+        <div class="zx-review-summary" data-review-summary="zx-landing-kit"></div>
+        <button class="add" data-add="">ADD +</button>
+        <button type="button" class="zx-review-toggle" data-review-toggle="zx-landing-kit">ULASAN</button>
+        <div class="zx-review-panel hidden" data-review-panel="zx-landing-kit"></div>
+      </article>
+      <article class="product zx-panel" data-name="Neon UI Pack" data-price="39000" data-pid="neon-ui-pack">
+        <div class="product-art">02</div>
+        <div><small>UI PACK</small><h3>NEON UI PACK</h3><p>Cards, buttons, nav and HUD.</p><strong>Rp39K</strong></div>
+        <div class="zx-review-summary" data-review-summary="neon-ui-pack"></div>
+        <button class="add" data-add="">ADD +</button>
+        <button type="button" class="zx-review-toggle" data-review-toggle="neon-ui-pack">ULASAN</button>
+        <div class="zx-review-panel hidden" data-review-panel="neon-ui-pack"></div>
+      </article>
+      <article class="product zx-panel" data-name="Roblox FX Pack" data-price="59000" data-pid="roblox-fx-pack">
+        <div class="product-art">03</div>
+        <div><small>ROBLOX</small><h3>ROBLOX FX PACK</h3><p>Neon animation concepts.</p><strong>Rp59K</strong></div>
+        <div class="zx-review-summary" data-review-summary="roblox-fx-pack"></div>
+        <button class="add" data-add="">ADD +</button>
+        <button type="button" class="zx-review-toggle" data-review-toggle="roblox-fx-pack">ULASAN</button>
+        <div class="zx-review-panel hidden" data-review-panel="roblox-fx-pack"></div>
+      </article>
+    </div>
+    <aside class="cart zx-panel">
+      <div class="cart-head"><span>CART</span><b id="cartCount">0</b></div>
+      <div class="cart-items" id="cartItems"><p class="empty">Cart masih kosong.</p></div>
+      <div class="cart-total"><span>TOTAL</span><strong id="cartTotal">Rp0</strong></div>
+      <button class="btn hot full" id="createOrder">CREATE ORDER ID ↗</button>
+      <button class="clear" id="clearCart">CLEAR CART</button>
+      <button class="clear" id="openPortalBtn" data-zx-goto="portal">LACAK PESANAN →</button>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= PAYMENT CHECKOUT (V516 flow — structure preserved) ================= -->
+<section class="section payment-checkout wrap v516" id="payment-checkout">
+  <div class="section-head">
+    <div><span class="eyebrow">06 // Payment checkout</span><h2>CONFIRM &<br/><em>PAY NOW.</em></h2></div>
+    <p>Konfirmasi informasi customer, scan QRIS, dan upload bukti pembayaran. Admin akan verifikasi dalam beberapa menit.</p>
+  </div>
+  <button type="button" class="zx-inline-back" data-zx-goto="store">← Kembali ke Store</button>
+
+  <div class="checkout-container">
+    <div class="checkout-main">
+      <article class="checkout-card zx-panel active" data-step="1">
+        <div class="checkout-header"><span class="payment-chip">STEP 1</span><h3>Order Summary</h3></div>
+        <div class="order-summary" id="checkoutOrderSummary"><p class="empty">Belum ada order. Silakan checkout dari cart.</p></div>
+      </article>
+
+      <article class="checkout-card zx-panel" data-step="2">
+        <div class="checkout-header"><span class="payment-chip">STEP 2</span><h3>Customer Information</h3></div>
+        <form class="checkout-form" id="customerInfoForm">
+          <label><span>Nama Lengkap *</span><input id="checkoutName" type="text" placeholder="Nama kamu" required/></label>
+          <label><span>Nomor WhatsApp *</span><input id="checkoutPhone" type="tel" placeholder="62..." inputmode="tel" required/></label>
+          <label><span>Catatan Pesanan (opsional)</span><textarea id="checkoutNote" placeholder="Catatan tambahan untuk order" maxlength="200"></textarea></label>
+        </form>
+      </article>
+
+      <article class="checkout-card zx-panel" data-step="3">
+        <div class="checkout-header"><span class="payment-chip">STEP 3</span><h3>Metode Pembayaran</h3></div>
+        <div class="payment-method-group">
+          <div class="payment-method active" data-method="qris">
+            <div class="method-icon">💳</div>
+            <div class="method-info"><strong>QRIS</strong><p>Scan dengan aplikasi perbankan atau e-wallet</p></div>
+            <span class="checkmark">✓</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="checkout-card zx-panel" data-step="4">
+        <div class="checkout-header"><span class="payment-chip">STEP 4</span><h3>Scan & Bayar</h3></div>
+        <div class="qris-checkout">
+          <div class="qris-display">
+            <div class="qris-frame">
+              <a href="assets/qris.webp" target="_blank" rel="noopener" title="Buka QRIS ukuran penuh">
+                <img loading="lazy" decoding="async" src="assets/qris.webp" alt="ZYREX QRIS Code"/>
+              </a>
+            </div>
+            <div class="qris-info">
+              <div class="qris-amount"><span>Total Pembayaran</span><strong id="checkoutQrisAmount">Rp0</strong></div>
+              <div class="qris-instructions">
+                <h4>Cara Pembayaran:</h4>
+                <ol>
+                  <li>Buka aplikasi bank atau e-wallet Anda</li>
+                  <li>Pilih fitur "Scan QRIS" atau "Bayar Pakai QRIS"</li>
+                  <li>Arahkan ke QR Code di atas</li>
+                  <li>Masukkan jumlah dan konfirmasi pembayaran</li>
+                  <li>Ambil screenshot/foto bukti pembayaran</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="checkout-card zx-panel" data-step="5">
+        <div class="checkout-header"><span class="payment-chip">STEP 5</span><h3>Upload Bukti Pembayaran</h3></div>
+        <div class="proof-upload" id="proofUploadContainer">
+          <div class="upload-area" id="proofUploadArea">
+            <div class="upload-icon">📸</div>
+            <p>Klik atau drag file bukti pembayaran</p>
+            <span>JPG, PNG, atau WebP • Maks 5MB</span>
+            <input id="proofFileInput" type="file" accept="image/jpeg,image/png,image/webp" style="display:none"/>
+          </div>
+          <div class="proof-preview" id="proofPreview" style="display:none;">
+            <img id="proofPreviewImg" alt="Preview"/>
+            <div class="preview-actions"><button type="button" class="btn line small" id="proofChangeBtn">Ubah Foto</button></div>
+          </div>
+          <div class="upload-status" id="proofUploadStatus"></div>
+        </div>
+      </article>
+
+      <article class="checkout-card zx-panel" data-step="6">
+        <div class="checkout-header"><span class="payment-chip">STEP 6</span><h3>Konfirmasi Pembayaran</h3></div>
+        <div class="final-review" id="finalReview"><p class="empty">Lengkapi semua langkah di atas terlebih dahulu.</p></div>
+        <div class="checkout-actions">
+          <button type="button" class="btn outline" id="checkoutPrevBtn">← Kembali</button>
+          <button type="button" class="btn hot" id="checkoutNextBtn">Lanjut →</button>
+          <button type="button" class="btn hot full" id="submitPaymentProofBtn" style="display:none;">✓ SUBMIT PEMBAYARAN</button>
+        </div>
+      </article>
+    </div>
+
+    <aside class="checkout-sidebar">
+      <div class="progress-tracker zx-panel">
+        <div class="progress-step active" data-step="1"><span>1</span><label>Order</label></div>
+        <div class="progress-step" data-step="2"><span>2</span><label>Info</label></div>
+        <div class="progress-step" data-step="3"><span>3</span><label>Method</label></div>
+        <div class="progress-step" data-step="4"><span>4</span><label>QRIS</label></div>
+        <div class="progress-step" data-step="5"><span>5</span><label>Proof</label></div>
+        <div class="progress-step" data-step="6"><span>6</span><label>Submit</label></div>
+      </div>
+      <div class="sidebar-info zx-panel">
+        <div class="info-box"><small>Order ID</small><strong id="sidebarOrderId">-</strong></div>
+        <div class="info-box"><small>Status</small><strong id="sidebarStatus" class="status-pending">PENDING</strong></div>
+        <div class="info-box highlight"><small>Total</small><strong id="sidebarTotal">Rp0</strong></div>
+      </div>
+      <div class="sidebar-help zx-panel">
+        <h4>💡 Tips</h4>
+        <p>Pastikan bukti pembayaran jelas dan memperlihatkan tanggal serta nominal pembayaran.</p>
+        <a href="https://wa.me/6287757131994?text=Halo%20ZYREX%2C%20saya%20butuh%20bantuan%20dengan%20pembayaran" target="_blank" rel="noopener" class="btn line small full">Hubungi Support</a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= CUSTOMER PORTAL (order tracking, structure preserved) ================= -->
+<section class="section zx-customer-portal wrap" id="customer-portal">
+  <button type="button" class="zx-inline-back" data-zx-goto="store">← Kembali ke Store</button>
+  <div class="zx-customer-grid">
+    <div class="zx-customer-panel zx-panel">
+      <h3>Customer Order Portal</h3>
+      <div class="zx-customer-muted">Track your ZYREX order with an Order ID + private access code.</div>
+      <form class="zx-customer-form" id="zx-track-form">
+        <input id="zx-track-id" autocomplete="off" placeholder="Order ID (ZX-...)" required/>
+        <input id="zx-track-token" autocomplete="one-time-code" inputmode="text" placeholder="Private access code" required/>
+        <button type="submit">Track Securely</button>
+      </form>
+      <div id="zx-track-result" class="zx-order-card zx-empty">Enter an Order ID to view the latest status.</div>
+    </div>
+    <div class="zx-customer-panel zx-panel">
+      <h3>Customer Updates</h3>
+      <div class="zx-customer-muted">Your access code is generated with each new order. Keep it private; it is required to view cloud order details.</div>
+      <div class="zx-order-card">
+        <div class="zx-status-row"><strong>Secure status flow</strong><span class="zx-status-pill">LIVE</span></div>
+        <div class="zx-steps"><i class="zx-step on"></i><i class="zx-step on"></i><i class="zx-step"></i><i class="zx-step"></i><i class="zx-step"></i></div>
+        <div class="zx-customer-muted">Created → Payment Review → Processing → Completed</div>
+        <div class="zx-portal-actions">
+          <button type="button" id="zx-open-store">Open Store</button>
+          <button type="button" id="zx-open-contact">Contact ZYREX</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ACCOUNT (LOGIN / REGISTER) ================= -->
+<section class="section zx-account wrap" id="account">
+  <button type="button" class="zx-inline-back" data-zx-goto="home">← Kembali</button>
+
+  <div id="zx-auth-user">
+    <div class="section-head">
+      <span class="eyebrow">06 // AKUN</span>
+      <h2>Halo, <span id="zx-user-name">—</span>.</h2>
+      <p id="zx-user-email" class="zx-customer-muted"></p>
+    </div>
+    <div class="zx-auth-card zx-panel">
+      <div class="zx-customer-muted" style="margin-bottom:16px">Kamu sedang login di perangkat ini.</div>
+      <button type="button" class="btn outline full" id="zx-logout-btn">LOGOUT</button>
+    </div>
+
+    <div class="section-head" style="margin-top:36px">
+      <span class="eyebrow">RIWAYAT</span>
+      <h3 style="font-size:20px">Order kamu.</h3>
+    </div>
+    <div id="zx-orders-list" class="zx-orders-list">
+      <p class="zx-customer-muted">Memuat riwayat order…</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="section about wrap" id="about">
+  <div class="section-head" style="margin-bottom:24px">
+    <div><span class="eyebrow">07 // Who is ZYREX?</span><h2>SMALL TEAM.<br/><em>BIG ENERGY.</em></h2></div>
+  </div>
+  <div class="about-copy">
+    <p>ZYREX adalah digital lab independen yang menggabungkan <b>visual, code dan eksperimen</b> dalam satu tempat.</p>
+    <p>Targetnya sederhana: bikin sesuatu yang bukan cuma bekerja, tapi punya identitas yang langsung kelihatan.</p>
+    <div class="numbers">
+      <div><b>24+</b><span>BUILDS</span></div>
+      <div><b>08</b><span>SERVICES</span></div>
+      <div><b>∞</b><span>IDEAS</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="section faq-section wrap" id="faq">
+  <div class="section-head">
+    <div><span class="eyebrow">08 // Answers</span><h2>NO<br/><em>GUESSING.</em></h2></div>
+    <p>FAQ singkat sebelum lu masuk ke contact.</p>
+  </div>
+  <div class="faq-list">
+    <details open=""><summary>Apakah ZYREX cuma bikin website?</summary><p>Nggak. ZYREX juga punya jalur untuk Roblox system, UI/UX, automation, digital products dan eksperimen interaktif.</p></details>
+    <details><summary>Checkout store-nya bagaimana?</summary><p>Produk masuk ke cart lalu checkout diproses langsung di website. QRIS dan bukti pembayaran diverifikasi admin.</p></details>
+    <details><summary>Bisa request project yang aneh?</summary><p>Bisa. Justru bagian "weird idea" adalah salah satu jalur utama ZYREX Lab.</p></details>
+    <details><summary>Apakah website ini perlu backend?</summary><p>Core experience tetap static-first sehingga mudah dideploy ke Vercel. Fitur yang membutuhkan layanan eksternal (checkout, radar, admin) berjalan lewat API terpisah.</p></details>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="section contact wrap" id="contact">
+  <div class="contact-wrap">
+    <div class="contact-big">
+      <span class="eyebrow">09 // Project intake</span>
+      <h2>HAVE A<br/><em>WEIRD IDEA?</em></h2>
+      <p>Bagus. Kirim aja. Ide random pun boleh — kita pecah jadi brief yang jelas.</p>
+      <div class="contact-links">
+        <a href="https://wa.me/6287757131994" rel="noopener" target="_blank">WHATSAPP ↗</a>
+        <a href="https://t.me/RexSi" rel="noopener" target="_blank">TELEGRAM ↗</a>
+      </div>
+      <div class="zy-social-row" aria-label="Social links">
+        <a href="https://wa.me/6287757131994" target="_blank" rel="noopener" aria-label="WhatsApp">WA</a>
+        <a href="https://t.me/RexSi" target="_blank" rel="noopener" aria-label="Telegram">TG</a>
+        <a href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub">GH</a>
+      </div>
+    </div>
+    <form id="projectForm">
+      <label>NAMA<input name="name" placeholder="Nama kamu" required/></label>
+      <label>PROJECT TYPE
+        <select name="type"><option>Website</option><option>Roblox System</option><option>UI / UX</option><option>Automation</option><option>Other / Weird</option></select>
+      </label>
+      <label>BUDGET
+        <select name="budget"><option>Belum tahu</option><option>&lt; Rp100K</option><option>Rp100K – Rp500K</option><option>Rp500K+</option></select>
+      </label>
+      <label>BRIEF<textarea name="brief" placeholder="Apa yang mau dibangun?" required></textarea></label>
+      <button class="btn hot full" type="submit">SEND PROJECT BRIEF ↗</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div><b>ZYREX<span>//</span>LAB</b><p>BUILD LOUD. SHIP CLEAN.</p></div>
+  <div><span>© 2026 ZYREX</span><span>WEB / ROBLOX / UI / AUTO</span></div>
+</footer>
+
+<!-- ============ MODAL / COMMAND / TOAST ============ -->
+<div class="modal" id="projectModal">
+  <div class="modal-box zx-panel">
+    <button class="modal-close" id="modalClose">×</button>
+    <small id="modalTag">PROJECT</small>
+    <h2 id="modalTitle">TITLE</h2>
+    <p id="modalDesc"></p>
+    <div class="tags" id="modalTags"></div>
+    <a class="btn hot full" id="modalStart" href="#contact" data-zx-page="contact" style="margin-top:16px">START SIMILAR PROJECT ↗</a>
+  </div>
+</div>
+
+<div class="command" id="command">
+  <div class="command-box zx-panel">
+    <input id="commandInput" placeholder="Search sections... (work, store, radar, contact)" autocomplete="off"/>
+    <div id="commandList">
+      <button data-go="#home">Home</button>
+      <button data-go="#work">Work</button>
+      <button data-go="#services">Services</button>
+      <button data-go="#lab">Lab</button>
+      <button data-radar-open="1">Earthquake Radar</button><button data-ai-open="1">ZYREX AI</button>
+      <button data-go="#store">Store</button>
+      <button data-go="#about">About</button>
+      <button data-go="#contact">Contact</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="zxBuildTag" style="position:fixed;right:8px;bottom:8px;z-index:9999;font:9px monospace;color:rgba(255,255,255,.28);pointer-events:none">BUILD V542</div>
+
+<script src="checkout-v516.js"></script>
+<script src="portal.js"></script>
+<script src="pwa.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="app-hub.js"></script>
+<script src="earthquakes.js"></script>
+<script src="gesture-canvas.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

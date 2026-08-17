@@ -1,0 +1,7 @@
+import { redisCommand, hasRedis } from './_redis.js';
+import { isAdmin } from './_auth.js';
+export default async function handler(req,res){
+ if(req.method!=='GET')return res.status(405).json({ok:false,error:'Method not allowed'});
+ if(!isAdmin(req))return res.status(401).json({ok:false,error:'Unauthorized'});
+ if(!hasRedis())return res.status(503).json({ok:false,error:'Database belum dikonfigurasi'});
+ try{let cursor='0',keys=[];do{const r=await redisCommand('SCAN',cursor,'MATCH','zyrex:order:*','COUNT','100');cursor=String(r?.[0]??'0');if(Array.isArray(r?.[1]))keys.push(...r[1]);}while(cursor!=='0'&&keys.length<500);const orders=[];for(const k of keys){const raw=await redisCommand('GET',k);if(raw)try{const o=JSON.parse(raw);delete o.accessCodeHash;orders.push(o)}catch{}}orders.sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt));const stats={total:orders.length,pendingPayment:orders.filter(o=>o.status==='PENDING PAYMENT').length,pendingVerification:orders.filter(o=>o.status==='PENDING VERIFICATION').length,paid:orders.filter(o=>o.status==='PAID').length,processing:orders.filter(o=>o.status==='PROCESSING').length,completed:orders.filter(o=>o.status==='COMPLETED').length,rejected:orders.filter(o=>o.status==='REJECTED').length};return res.status(200).json({ok:true,orders,stats});}catch(e){console.error(e);return res.status(500).json({ok:false,error:'Gagal mengambil order'});}}

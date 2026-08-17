@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://zyrex.digital/sitemap.xml

@@ -1,0 +1,21 @@
+{
+  "name": "zyrex-v528",
+  "private": true,
+  "version": "5.28.0",
+  "type": "module",
+  "dependencies": {
+    "@capacitor/core": "^7.4.0",
+    "@capacitor/android": "^7.4.0"
+  },
+  "scripts": {
+    "dev": "npx netlify dev",
+    "check": "node --check script.js && node --check portal.js && node --check admin.js && node --check checkout-v516.js && node --check pwa.js",
+    "cap:add": "npx cap add android",
+    "cap:sync": "npx cap sync android",
+    "cap:open": "npx cap open android"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.0",
+    "netlify-cli": "^17.0.0"
+  }
+}

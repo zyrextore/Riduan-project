@@ -1,0 +1,57 @@
+{
+  "name": "ZYREX",
+  "short_name": "ZYREX",
+  "description": "ZYREX digital studio and store",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "id": "/",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Store",
+      "short_name": "Store",
+      "url": "/#store",
+      "icons": [
+        {
+          "src": "/assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Lacak Pesanan",
+      "short_name": "Lacak",
+      "url": "/#portal",
+      "icons": [
+        {
+          "src": "/assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

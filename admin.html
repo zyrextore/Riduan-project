@@ -1,0 +1,197 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ZYREX ADMIN // V517</title><link rel="stylesheet" href="style.css"><style>
+/* ============================================================
+   ZYREX ADMIN — CONTROL DECK
+   Rebuilt around the same seismograph/signal language as the
+   main site: a fixed side rail, a live signal strip, and order
+   rows read like log entries rather than a generic table.
+   ============================================================ */
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  min-height:100vh;color:var(--text);font:15px/1.6 var(--body);
+  background:
+    radial-gradient(1100px 600px at 100% -10%,var(--amber-dim),transparent 55%),
+    radial-gradient(800px 480px at -10% 10%,var(--teal-dim),transparent 55%),
+    var(--ink);
+}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+
+/* ---------- shell: side rail + main ---------- */
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.rail{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);padding:24px 18px;display:flex;flex-direction:column;gap:28px}
+.rail .brand{display:flex;align-items:center;gap:10px;font:800 14px var(--display);letter-spacing:.03em}
+.rail .brand b{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--amber);color:#2A0A1C;font:800 13px var(--display)}
+.rail .brand-sub{font:10px var(--mono);letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.rail-wave{width:100%;height:26px;overflow:hidden;opacity:.5}
+.rail-wave svg{width:200%;height:100%;animation:zxwave 9s linear infinite}
+.rail-nav{display:flex;flex-direction:column;gap:4px;font:11px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.rail-nav a{padding:10px 12px;border-radius:10px;color:var(--muted);border:1px solid transparent}
+.rail-nav a.current{color:var(--text);background:var(--panel);border-color:var(--line)}
+.rail-nav a:hover{color:var(--text)}
+.rail-foot{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.main{padding:24px clamp(16px,3vw,40px) 60px;min-width:0}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.topbar h1{font:800 22px var(--display);letter-spacing:-.01em}
+.topbar .eyebrow{display:block;margin-bottom:6px}
+.live-chip{display:flex;align-items:center;gap:7px;font:10px var(--mono);letter-spacing:.06em;color:var(--teal);border:1px solid var(--teal-dim);background:var(--teal-dim);border-radius:999px;padding:8px 14px;white-space:nowrap}
+.live-chip i{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 var(--teal-dim);animation:pulse 2s infinite}
+
+/* ---------- shared surfaces ---------- */
+.panel{position:relative;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius-lg);padding:22px}
+.panel::before,.panel::after{content:"";position:absolute;width:9px;height:9px;border-color:var(--amber);opacity:.55;pointer-events:none}
+.panel::before{top:-1px;left:-1px;border-top:1px solid;border-left:1px solid}
+.panel::after{bottom:-1px;right:-1px;border-bottom:1px solid;border-right:1px solid}
+
+/* ---------- login ---------- */
+#login.shell-login{display:grid;grid-template-columns:1fr;min-height:100vh;place-items:center;padding:24px}
+.login-card{width:100%;max-width:400px;position:relative;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius-lg);padding:28px}
+.login-card::before,.login-card::after{content:"";position:absolute;width:9px;height:9px;border-color:var(--amber);opacity:.55}
+.login-card::before{top:-1px;left:-1px;border-top:1px solid;border-left:1px solid}
+.login-card::after{bottom:-1px;right:-1px;border-bottom:1px solid;border-right:1px solid}
+.login-card .brand{display:flex;align-items:center;gap:10px;font:800 14px var(--display);margin-bottom:18px}
+.login-card .brand b{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--amber);color:#2A0A1C;font:800 13px var(--display)}
+.login-card h1{font:800 24px var(--display);margin:2px 0 8px}
+.eyebrow{font:11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+
+/* ---------- form controls ---------- */
+.input,.select{width:100%;box-sizing:border-box;border-radius:12px;padding:13px 14px;border:1px solid var(--line-strong);background:var(--panel2);color:var(--text);margin-top:12px;font:14px var(--body)}
+.input:focus,.select:focus{outline:2px solid var(--amber);outline-offset:1px}
+.btn{width:100%;box-sizing:border-box;margin-top:12px;padding:13px 14px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--text);cursor:pointer;font:700 12.5px var(--display);letter-spacing:.03em;transition:transform .15s,background .15s,border-color .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.hot{background:var(--amber);border-color:var(--amber);color:#2A0A1C}
+.btn.hot:hover{background:#FF8FC9}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#2A0A1C}
+.btn.ghost{background:transparent}
+.btn.auto{width:auto;margin:0}
+
+/* ---------- stat rail ---------- */
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:0 0 20px}
+.stat{position:relative;padding:16px 16px 14px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);border-left:3px solid var(--line-strong);overflow:hidden}
+.stat b{display:block;font:800 28px var(--display)}
+.stat span{font:10px var(--mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.stat.tone-all{border-left-color:var(--text)}
+.stat.tone-pend{border-left-color:var(--amber)}.stat.tone-pend b{color:var(--amber)}
+.stat.tone-paid{border-left-color:var(--teal)}.stat.tone-paid b{color:var(--teal)}
+.stat.tone-done{border-left-color:var(--teal)}.stat.tone-done b{color:var(--teal)}
+
+/* ---------- order log ---------- */
+.toolbar{display:grid;grid-template-columns:1fr 220px 110px;gap:10px;margin-bottom:16px}
+.orders{display:flex;flex-direction:column;gap:8px}
+.order{position:relative;display:grid;grid-template-columns:1.2fr 1.5fr 1fr .8fr 1fr auto;gap:10px;align-items:center;padding:14px 14px 14px 18px;border:1px solid var(--line);border-left:3px solid var(--line-strong);border-radius:10px;background:var(--panel2);transition:border-color .15s,transform .15s}
+.order:hover{border-color:var(--line-strong);transform:translateX(2px)}
+.order[data-s="PAID"],.order[data-s="COMPLETED"]{border-left-color:var(--teal)}
+.order[data-s="PENDING PAYMENT"],.order[data-s="PENDING VERIFICATION"]{border-left-color:var(--amber)}
+.order[data-s="REJECTED"]{border-left-color:var(--danger)}
+.order small{font:10px var(--mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.order strong{font:600 13px var(--body)}
+.order .open{padding:9px 12px;border-radius:9px;border:1px solid var(--line-strong);background:transparent;color:var(--text);cursor:pointer;font:700 11px var(--display);letter-spacing:.03em}
+.order .open:hover{border-color:var(--amber);color:var(--amber)}
+.status{font:10px var(--mono);letter-spacing:.04em;padding:7px 10px;border-radius:999px;border:1px solid var(--line-strong);display:inline-block}
+.status[data-s="PAID"],.status[data-s="COMPLETED"]{color:var(--teal);border-color:var(--teal-dim);background:var(--teal-dim)}
+.status[data-s="PENDING PAYMENT"],.status[data-s="PENDING VERIFICATION"]{color:var(--amber);border-color:var(--amber-dim);background:var(--amber-dim)}
+.status[data-s="REJECTED"]{color:var(--danger);border-color:rgba(255,93,108,.16);background:rgba(255,93,108,.1)}
+
+/* ---------- detail ---------- */
+.detail{margin-top:16px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kv{padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}
+.kv span{display:block;font:10px var(--mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.kv b{word-break:break-word;font-weight:600}
+.items{margin:12px 0}
+.item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.proof{width:100%;max-height:520px;object-fit:contain;border-radius:var(--radius);background:#000;margin-top:12px;border:1px solid var(--line)}
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.actions .btn{margin-top:0}
+.log{max-height:260px;overflow:auto;margin-top:12px}
+.log div{padding:9px 0;border-bottom:1px solid var(--line);font-size:11px;color:var(--muted)}
+.error{color:var(--danger);margin-top:10px;font-size:12px}
+.ok{color:var(--teal);margin-top:10px;font-size:12px}
+h2,h3{font-family:var(--display)}
+h3{font-size:15px;margin:20px 0 10px;letter-spacing:.02em}
+@keyframes zxwave{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--teal-dim)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+
+@media(max-width:960px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:static;height:auto;flex-direction:row;align-items:center;padding:14px 16px;gap:14px;overflow-x:auto}
+  .rail-wave{display:none}
+  .rail-nav{flex-direction:row}
+  .rail-foot{margin-top:0}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .order{grid-template-columns:1fr 1fr}
+  .toolbar{grid-template-columns:1fr}
+  .detail-grid{grid-template-columns:1fr}
+  .actions{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+  .stats{grid-template-columns:1fr 1fr}
+  .order{grid-template-columns:1fr}
+  .actions{grid-template-columns:1fr}
+  .topbar{flex-direction:column}
+}
+</style></head><body>
+
+<section id="login" class="shell-login">
+  <div class="login-card">
+    <div class="brand"><b>ZX</b> ZYREX CONTROL DECK</div>
+    <span class="eyebrow">RESTRICTED // V517</span>
+    <h1>Admin login</h1>
+    <p class="muted">Login diproses server-side. Password tidak pernah dikirim sebagai query atau disimpan di frontend.</p>
+    <input id="password" class="input" type="password" autocomplete="current-password" placeholder="Admin password">
+    <button id="loginBtn" class="btn hot">LOGIN</button>
+    <div id="loginMsg"></div>
+  </div>
+</section>
+
+<div id="dashboard" class="shell hidden">
+  <aside class="rail">
+    <div>
+      <div class="brand"><b>ZX</b> ZYREX</div>
+      <div class="brand-sub">Control deck // v517</div>
+    </div>
+    <div class="rail-wave" aria-hidden="true"><svg viewBox="0 0 400 26" preserveAspectRatio="none"><polyline points="0,13 20,13 28,3 36,23 44,13 60,13 68,7 76,19 84,13 200,13 208,3 216,23 224,13 240,13 248,7 256,19 264,13 380,13 388,3 396,23 400,13" fill="none" stroke="#3FD9AC" stroke-width="1.4"/></svg></div>
+    <nav class="rail-nav">
+      <a href="#" class="current">ORDERS</a>
+      <a href="/#home">← BACK TO SITE</a>
+    </nav>
+    <div class="rail-foot">
+      <button id="logout" class="btn ghost">LOGOUT</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <span class="eyebrow">ORDER SIGNALS</span>
+        <h1>Order control</h1>
+      </div>
+      <div class="live-chip"><i></i> LIVE FEED</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat tone-all"><b id="sTotal">0</b><span>TOTAL ORDERS</span></div>
+      <div class="stat tone-pend"><b id="sPP">0</b><span>PENDING PAYMENT</span></div>
+      <div class="stat tone-pend"><b id="sPV">0</b><span>PENDING VERIFICATION</span></div>
+      <div class="stat tone-paid"><b id="sPaid">0</b><span>PAID</span></div>
+      <div class="stat tone-all"><b id="sProc">0</b><span>PROCESSING</span></div>
+      <div class="stat tone-done"><b id="sDone">0</b><span>COMPLETED</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="toolbar">
+        <input id="search" class="input" style="margin:0" placeholder="Search order, customer, WhatsApp">
+        <select id="filter" class="select" style="margin:0">
+          <option>ALL</option><option>PENDING PAYMENT</option><option>PENDING VERIFICATION</option><option>PAID</option><option>PROCESSING</option><option>COMPLETED</option><option>REJECTED</option>
+        </select>
+        <button id="refresh" class="btn ghost" style="margin:0">REFRESH</button>
+      </div>
+      <div id="orders" class="orders"></div>
+    </div>
+
+    <div id="detail" class="panel detail hidden"></div>
+  </main>
+</div>
+
+<script src="admin.js"></script></body></html>

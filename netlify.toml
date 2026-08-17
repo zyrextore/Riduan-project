@@ -1,0 +1,50 @@
+[build]
+  command = ""
+  functions = ".netlify/functions"
+  publish = "."
+
+# Environment variables configuration
+[context.production.environment]
+  UPSTASH_REDIS_REST_URL = ""
+  UPSTASH_REDIS_REST_TOKEN = ""
+  NETLIFY_STORAGE_TOKEN = ""
+  ZYREX_ADMIN_PASSWORD = ""
+  ZYREX_ADMIN_SESSION_SECRET = ""
+  TELEGRAM_BOT_TOKEN = ""
+  TELEGRAM_CHAT_ID = ""
+
+# HTTP headers configuration
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/(index.html|style.css|script.js|portal.js|checkout-v516.js|app-hub.js|earthquakes.js|gesture-canvas.js|pwa.js|admin.html|admin.js)"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# URL redirects/rewrites
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/"
+  to = "/admin.html"
+  status = 200
+
+# Function configuration
+[functions]
+  node_bundler = "esbuild"
+  
+[functions."*.js"]
+  max_duration = 30
